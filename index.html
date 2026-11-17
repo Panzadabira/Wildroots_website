@@ -273,6 +273,109 @@
             font-size: 1.15rem;
         }
         .card p { margin: 0; color: var(--text-light); font-size: 0.97rem; }
+        .card p + p { margin-top: 8px; color: var(--text-dim); font-size: 0.88rem; }
+
+        /* Carte solo informative: nessun effetto al passaggio del mouse */
+        .cards.static .card:hover,
+        .classes .cards.static .card:hover {
+            transform: none;
+            box-shadow: none;
+            border-color: rgba(0, 230, 118, 0.22);
+            border-top-color: var(--neon-green);
+        }
+        .classes .cards.static .card:hover { border-top-color: var(--gold-accent); }
+
+        /* Cinque carte in fila (Core Gameplay) */
+        .cards.cards-5 { grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); }
+
+        /* Carte cliccabili: aprono la finestra con l'anteprima di gioco */
+        .card.clickable { cursor: pointer; }
+        .card.clickable:focus-visible { outline: 2px solid var(--gold-bright); outline-offset: 3px; }
+        .card .peek {
+            display: inline-block;
+            margin-top: 12px;
+            font-size: 0.78rem;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: var(--gold-bright);
+        }
+        .card.clickable:hover .peek { color: #ffffff; }
+
+        /* ---------- FINESTRA ANTEPRIMA ---------- */
+        .modal {
+            position: fixed;
+            inset: 0;
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 16px;
+            background: rgba(2, 4, 3, 0.88);
+            backdrop-filter: blur(4px);
+        }
+        .modal[hidden] { display: none; }
+        .modal-box {
+            position: relative;
+            width: 100%;
+            max-width: 760px;
+            max-height: 100%;
+            overflow-y: auto;
+            padding: 26px 22px 24px;
+            background: var(--panel);
+            background-color: #0e1410;
+            border: 1px solid rgba(194, 143, 44, 0.45);
+            border-radius: 12px;
+            box-shadow: 0 0 60px rgba(0, 230, 118, 0.2), 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+        .modal-box h3 {
+            font-family: var(--serif);
+            margin: 0 40px 6px 0;
+            color: var(--gold-bright);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            font-size: 1.4rem;
+        }
+        .modal-box p { margin: 0 0 16px; color: var(--text-light); }
+        .modal-close {
+            position: absolute;
+            top: 10px; right: 10px;
+            width: 44px; height: 44px;
+            border: 1px solid rgba(0, 230, 118, 0.35);
+            border-radius: 50%;
+            background: rgba(0, 0, 0, 0.4);
+            color: var(--neon-green);
+            font-size: 1.6rem;
+            line-height: 1;
+            cursor: pointer;
+        }
+        .modal-close:hover { color: #ffffff; border-color: var(--neon-green); }
+        .modal-shot {
+            width: 100%;
+            aspect-ratio: 16 / 9;
+            border-radius: 8px;
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            background: #050706;
+            overflow: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-shot img { width: 100%; height: 100%; object-fit: cover; display: block; }
+        .modal-shot .placeholder {
+            color: var(--text-dim);
+            font-style: italic;
+            text-align: center;
+            padding: 20px;
+            border: 2px dashed rgba(194, 143, 44, 0.35);
+            border-radius: 8px;
+            margin: 14px;
+            width: calc(100% - 28px);
+            height: calc(100% - 28px);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        body.modal-open { overflow: hidden; }
 
         .classes .card { border-top-color: var(--gold-accent); }
         .classes .card h3 { color: var(--gold-bright); }
@@ -381,11 +484,12 @@
             <h2>Core Gameplay</h2>
             <div class="section-rule"></div>
             <p class="lead"><em>Wildroots: Grove of the Last Guardian</em> is a <strong>2.5D roguelike tower defense</strong> where you gather resources, build your village and its defenses, and protect the Heart of the Grove. You are the Guardian, a Wandering Seed: every run is a new world, and the waves alternate calm, growth, assault and boss phases, until the Heart falls.</p>
-            <div class="cards">
-                <div class="card"><div class="num">I</div><h3>Gather</h3><p>Harvest resources from the living forest around you.</p></div>
-                <div class="card"><div class="num">II</div><h3>Build</h3><p>Raise structures and defenses around the Heart.</p></div>
-                <div class="card"><div class="num">III</div><h3>Fight</h3><p>Face the corrupted in real-time combat.</p></div>
-                <div class="card"><div class="num">IV</div><h3>Survive</h3><p>Endure increasingly intense enemy waves.</p></div>
+            <div class="cards cards-5">
+                <div class="card clickable" role="button" tabindex="0" aria-haspopup="dialog" data-shot="gather"><div class="num">I</div><h3>Gather</h3><p>Harvest resources from the living forest around you.</p><span class="peek">See it</span></div>
+                <div class="card clickable" role="button" tabindex="0" aria-haspopup="dialog" data-shot="build"><div class="num">II</div><h3>Build</h3><p>Raise structures and defenses around the Heart.</p><span class="peek">See it</span></div>
+                <div class="card clickable" role="button" tabindex="0" aria-haspopup="dialog" data-shot="fight"><div class="num">III</div><h3>Fight</h3><p>Face the corrupted in real-time combat.</p><span class="peek">See it</span></div>
+                <div class="card clickable" role="button" tabindex="0" aria-haspopup="dialog" data-shot="survive"><div class="num">IV</div><h3>Survive</h3><p>Endure increasingly intense enemy waves.</p><span class="peek">See it</span></div>
+                <div class="card clickable" role="button" tabindex="0" aria-haspopup="dialog" data-shot="explore"><div class="num">V</div><h3>Explore</h3><p>Uncover seeds, relics and secrets in a new world every run.</p><span class="peek">See it</span></div>
             </div>
         </section>
 
@@ -394,7 +498,7 @@
             <h2>Ways to Play</h2>
             <div class="section-rule"></div>
             <p class="lead">Learn the ropes, survive for as long as you can, or take the fight to the forest together.</p>
-            <div class="cards">
+            <div class="cards static">
                 <div class="card"><h3>The Awakening</h3><p>A guided tutorial for new Guardians.</p></div>
                 <div class="card"><h3>Ancient Forest</h3><p>Classic survival: endless cycles of phases and bosses, with no fixed end.</p></div>
                 <div class="card"><h3>Thorn Storm</h3><p>A short, high-intensity Rush mode with boosted XP.</p></div>
@@ -410,7 +514,7 @@
             <h2>Choose Your Path</h2>
             <div class="section-rule"></div>
             <p class="lead">Choose your playstyle, each offering a different approach to combat and survival, each with its own active ability.</p>
-            <div class="cards">
+            <div class="cards static">
                 <div class="card"><h3>Warrior</h3><p>Stand at the front and hold the line.</p></div>
                 <div class="card"><h3>Hunter</h3><p>Strike from range and control the battlefield.</p></div>
                 <div class="card"><h3>Mage</h3><p>Bend the forest's power to your will.</p></div>
@@ -423,11 +527,11 @@
             <h2>Choose Your Race</h2>
             <div class="section-rule"></div>
             <p class="lead">Each race brings its own bonuses and an element that colors your attacks and effects.</p>
-            <div class="cards">
-                <div class="card"><h3>Humans</h3></div>
-                <div class="card"><h3>Sylvari</h3></div>
-                <div class="card"><h3>Shardlings</h3></div>
-                <div class="card"><h3>Ashborn</h3></div>
+            <div class="cards static">
+                <div class="card"><h3>Humans</h3><p><strong>+10% health</strong><br>Wind attacks</p><p>Common folk, hard to put down. You start with this race.</p></div>
+                <div class="card"><h3>Sylvari</h3><p><strong>+10% movement speed</strong><br>Poison attacks</p><p>Tree folk, quick through the forest.</p></div>
+                <div class="card"><h3>Shardlings</h3><p><strong>+10% attack range</strong><br>Ice attacks</p><p>Crystal folk who strike from farther away.</p></div>
+                <div class="card"><h3>Ashborn</h3><p><strong>+10% damage</strong><br>Fire attacks</p><p>Ember folk who hit the hardest.</p></div>
             </div>
         </section>
 
@@ -436,13 +540,8 @@
             <h2>Build &amp; Defend</h2>
             <div class="section-rule"></div>
             <p class="lead"><strong>One seed, one building.</strong> Discover ancient seeds hidden in the forest and grow them with experience to unlock new structures. Place them with a tap: they rise from the soil around the Heart.</p>
-            <div class="cards">
-                <div class="card"><h3>Defensive Briar</h3><p>A heavy strike against ground enemies.</p></div>
-                <div class="card"><h3>Thornspitter</h3><p>Long-range anti-air.</p></div>
-                <div class="card"><h3>Rotten Puffball</h3><p>A cloud of spores that wears enemies down.</p></div>
-                <div class="card"><h3>Treacherous Thorns</h3><p>A decoy trap that lures even flying enemies.</p></div>
-            </div>
-            <p class="lead" style="margin-top: 26px;">Keep the village alive too: Mines and Mushroom fields produce resources, the Doctor heals the Heart, and the Merchant trades with you. Upgrade your hero and every defense with cards.</p>
+            <p class="lead">Defend the Heart with the Defensive Briar (a heavy strike against ground enemies), the Thornspitter (long-range anti-air), the Rotten Puffball (a cloud of spores) and Treacherous Thorns (a decoy trap that lures even flying enemies).</p>
+            <p class="lead">Keep the village alive too: Mines and Mushroom fields produce resources, the Doctor heals the Heart, and the Merchant trades with you. Upgrade your hero and every defense with cards.</p>
         </section>
 
         <!-- NEMICI -->
@@ -521,6 +620,16 @@
         </footer>
     </div>
 
+    <!-- FINESTRA ANTEPRIMA DI GIOCO (Core Gameplay) -->
+    <div id="shot-modal" class="modal" hidden role="dialog" aria-modal="true" aria-labelledby="shot-title">
+        <div class="modal-box">
+            <button type="button" class="modal-close" aria-label="Close">&times;</button>
+            <h3 id="shot-title"></h3>
+            <p id="shot-text"></p>
+            <div class="modal-shot" id="shot-media"></div>
+        </div>
+    </div>
+
     <script>
         // Il contenuto resta visibile anche senza JavaScript (classe no-js)
         document.body.classList.remove('no-js');
@@ -538,6 +647,72 @@
                 });
             }, { threshold: 0.12 });
             items.forEach(function (el) { io.observe(el); });
+        })();
+
+        // Finestra con l'anteprima di gioco. Per sostituire un segnaposto basta
+        // scrivere il percorso dell'immagine in "img" (es. 'img/gather.webp').
+        (function () {
+            var SHOTS = {
+                gather:  { title: 'Gather',  text: 'Harvest wood, stone, food, iron and gold from the living forest around you.', img: 'img/gather.webp' },
+                build:   { title: 'Build',   text: 'Raise structures and defenses around the Heart, growing them from the soil.', img: 'img/build.webp' },
+                fight:   { title: 'Fight',   text: 'Face the corrupted in real-time combat with your class abilities.', img: 'img/fight.webp' },
+                survive: { title: 'Survive', text: 'Endure waves of calm, growth and assault, until the boss arrives.', img: 'img/survive.webp' },
+                explore: { title: 'Explore', text: 'Uncover ancient seeds, hidden relics and secrets in a world that changes every run.', img: 'img/explore.webp' }
+            };
+            var modal = document.getElementById('shot-modal');
+            var closeBtn = modal.querySelector('.modal-close');
+            var titleEl = document.getElementById('shot-title');
+            var textEl = document.getElementById('shot-text');
+            var media = document.getElementById('shot-media');
+            var opener = null;
+
+            function showPlaceholder() {
+                media.innerHTML = '';
+                var d = document.createElement('div');
+                d.className = 'placeholder';
+                d.textContent = 'Gameplay preview coming soon';
+                media.appendChild(d);
+            }
+            function open(id, from) {
+                var s = SHOTS[id];
+                if (!s) return;
+                opener = from || null;
+                titleEl.textContent = s.title;
+                textEl.textContent = s.text;
+                if (s.img) {
+                    media.innerHTML = '';
+                    var im = new Image();
+                    im.alt = s.title + ' gameplay';
+                    im.onerror = showPlaceholder;
+                    im.src = s.img;
+                    media.appendChild(im);
+                } else {
+                    showPlaceholder();
+                }
+                modal.hidden = false;
+                document.body.classList.add('modal-open');
+                closeBtn.focus();
+            }
+            function close() {
+                modal.hidden = true;
+                document.body.classList.remove('modal-open');
+                media.innerHTML = '';
+                if (opener && opener.focus) opener.focus();
+            }
+
+            document.querySelectorAll('.card.clickable').forEach(function (card) {
+                card.addEventListener('click', function () { open(card.getAttribute('data-shot'), card); });
+                card.addEventListener('keydown', function (e) {
+                    if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(card.getAttribute('data-shot'), card); }
+                });
+            });
+            closeBtn.addEventListener('click', close);
+            modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+            document.addEventListener('keydown', function (e) {
+                if (modal.hidden) return;
+                if (e.key === 'Escape') close();
+                if (e.key === 'Tab') { e.preventDefault(); closeBtn.focus(); }
+            });
         })();
 
         // Lucciole: particelle verdi e dorate che salgono dal sottobosco
