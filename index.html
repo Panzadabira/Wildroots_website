@@ -4,216 +4,597 @@
     <meta name="google-site-verification" content="7JAkcJRSmC-GNQ_4eDaaxKH7pdoj_5_vM1WY8l1N0zg" />
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Wildroots: Grove of the Last Guardian - a 2.5D tower defense survival roguelike for Android. Gather, build, fight and protect the Heart of the Grove.">
+    <meta property="og:title" content="Wildroots: Grove of the Last Guardian">
+    <meta property="og:description" content="The forest listens... and blood answers. A 2.5D tower defense survival roguelike for Android.">
+    <meta property="og:type" content="website">
     <title>Wildroots: Grove of the Last Guardian | PanzaLabs</title>
     <style>
         /* =========================================================
-           LIVELO 4: FOGLIE (Visuals & UI Gothic Emerald)
+           WILDROOTS - Gothic Emerald (epic edition)
            ========================================================= */
         :root {
-            --bg-color: #121412;
+            --bg-color: #0a0d0b;
+            --bg-deep: #060806;
+            --panel: rgba(18, 24, 20, 0.78);
             --border-green: #005c30;
             --neon-green: #00e676;
             --gold-accent: #c28f2c;
+            --gold-bright: #f0c35a;
+            --blood: #8c1d1d;
             --text-light: #d6cebc;
             --text-dim: #a0a090;
+            --serif: 'Palatino Linotype', Palatino, 'Book Antiqua', Georgia, 'Times New Roman', serif;
         }
 
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+
         body {
-            background-color: var(--bg-color);
+            background-color: var(--bg-deep);
             color: var(--text-light);
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            line-height: 1.6;
+            line-height: 1.65;
+            overflow-x: hidden;
         }
 
-        /* Container Principale */
+        /* Sfondo: nebbia verde + vignetta, fissi dietro al contenuto */
+        body::before {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -2;
+            background:
+                radial-gradient(ellipse at 50% -10%, rgba(0, 230, 118, 0.18), transparent 55%),
+                radial-gradient(ellipse at 80% 40%, rgba(194, 143, 44, 0.08), transparent 50%),
+                linear-gradient(180deg, #0c1410 0%, var(--bg-deep) 70%);
+        }
+        body::after {
+            content: "";
+            position: fixed;
+            inset: 0;
+            z-index: -1;
+            pointer-events: none;
+            background: radial-gradient(ellipse at center, transparent 55%, rgba(0, 0, 0, 0.75) 100%);
+        }
+
+        #fireflies {
+            position: fixed;
+            inset: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            pointer-events: none;
+        }
+
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 0 20px 60px;
         }
 
-        /* Header & Titoli */
+        /* ---------- HERO ---------- */
         header {
             text-align: center;
-            margin-bottom: 40px;
-            padding-bottom: 20px;
-            border-bottom: 2px solid var(--border-green);
+            padding: 90px 10px 50px;
+            position: relative;
+        }
+
+        .kicker {
+            font-size: 0.85rem;
+            letter-spacing: 6px;
+            text-transform: uppercase;
+            color: var(--gold-accent);
+            margin: 0 0 14px;
         }
 
         h1 {
-            color: var(--neon-green);
+            font-family: var(--serif);
+            font-size: clamp(3rem, 12vw, 6.5rem);
+            line-height: 1;
+            margin: 0;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            font-size: 2.5rem;
-            margin-bottom: 5px;
-            text-shadow: 0 0 10px rgba(0, 230, 118, 0.3);
+            letter-spacing: clamp(3px, 1.5vw, 12px);
+            color: #eafff3;
+            background: linear-gradient(180deg, #ffffff 0%, var(--neon-green) 55%, #00a352 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            filter: drop-shadow(0 0 18px rgba(0, 230, 118, 0.45)) drop-shadow(0 4px 0 rgba(0, 0, 0, 0.6));
+            animation: titleGlow 5s ease-in-out infinite;
         }
 
-        h2 {
-            color: var(--gold-accent);
-            margin-top: 30px;
-            border-bottom: 1px solid rgba(194, 143, 44, 0.3);
-            padding-bottom: 5px;
+        @keyframes titleGlow {
+            0%, 100% { filter: drop-shadow(0 0 14px rgba(0, 230, 118, 0.35)) drop-shadow(0 4px 0 rgba(0, 0, 0, 0.6)); }
+            50%      { filter: drop-shadow(0 0 30px rgba(0, 230, 118, 0.7)) drop-shadow(0 4px 0 rgba(0, 0, 0, 0.6)); }
         }
 
         .subtitle {
+            font-family: var(--serif);
             font-style: italic;
-            color: var(--text-dim);
-            font-size: 1.2rem;
-            margin-top: 0;
+            color: var(--gold-bright);
+            font-size: clamp(1.1rem, 3.5vw, 1.7rem);
+            letter-spacing: 3px;
+            margin: 14px 0 0;
+            text-shadow: 0 0 14px rgba(194, 143, 44, 0.5);
         }
 
-        /* Sezione Video */
-        .video-container {
-            position: relative;
-            padding-bottom: 56.25%; /* 16:9 Aspect Ratio */
-            height: 0;
-            overflow: hidden;
-            border: 2px solid var(--border-green);
-            border-radius: 8px;
-            margin-bottom: 30px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.8);
+        .divider {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            margin: 28px auto 0;
+            max-width: 420px;
+        }
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+        }
+        .divider span {
+            width: 10px; height: 10px;
+            background: var(--gold-accent);
+            transform: rotate(45deg);
+            box-shadow: 0 0 12px var(--gold-accent);
         }
 
-        .video-container iframe {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-
-        /* Sezione Hook (Blockquote) */
-        blockquote {
-            border-left: 4px solid var(--neon-green);
-            padding: 15px 20px;
-            margin: 30px 0;
-            background-color: rgba(0, 230, 118, 0.05);
+        .tagline {
+            font-family: var(--serif);
             font-style: italic;
-            font-size: 1.2rem;
-            text-align: center;
+            font-size: clamp(1.2rem, 4vw, 1.7rem);
+            max-width: 640px;
+            margin: 36px auto 6px;
+            color: #efe8d6;
+            text-shadow: 0 2px 12px rgba(0, 0, 0, 0.9);
         }
+        .tagline em { color: #e05a5a; font-style: italic; text-shadow: 0 0 14px rgba(224, 90, 90, 0.45); }
+        .tagline-sub { color: var(--text-dim); margin: 0 auto; max-width: 560px; }
 
-        ul {
-            list-style-type: square;
-            color: var(--neon-green);
-        }
-
-        ul li span {
-            color: var(--text-light); /* Ripristina il colore per il testo */
-        }
-
-        /* Bottone Call to Action */
-        .cta-container {
-            text-align: center;
-            margin: 50px 0;
-        }
+        /* ---------- CTA ---------- */
+        .cta-container { text-align: center; margin: 34px 0 20px; }
 
         .btn-cta {
-            background-color: var(--neon-green);
-            color: var(--bg-color);
-            padding: 15px 35px;
+            position: relative;
+            background: linear-gradient(180deg, #19f58a 0%, var(--neon-green) 50%, #00b85e 100%);
+            color: #03130a;
+            padding: 17px 44px;
             text-decoration: none;
-            font-weight: bold;
+            font-weight: 800;
             border-radius: 6px;
-            font-size: 1.2rem;
+            font-size: 1.15rem;
+            letter-spacing: 1.5px;
             text-transform: uppercase;
             display: inline-block;
-            box-shadow: 0 4px 15px rgba(0, 230, 118, 0.4);
+            border: 1px solid #7dffc0;
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 6px 24px rgba(0, 230, 118, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.55);
             transition: transform 0.2s, box-shadow 0.2s;
+            overflow: hidden;
         }
-
+        .btn-cta::after {
+            content: "";
+            position: absolute;
+            top: 0; left: -80%;
+            width: 50%; height: 100%;
+            background: linear-gradient(100deg, transparent, rgba(255, 255, 255, 0.55), transparent);
+            transform: skewX(-20deg);
+            animation: shine 4s ease-in-out infinite;
+        }
+        @keyframes shine {
+            0%, 60% { left: -80%; }
+            100%    { left: 140%; }
+        }
         .btn-cta:hover {
-            transform: scale(1.05);
-            box-shadow: 0 6px 20px rgba(0, 230, 118, 0.6);
+            transform: translateY(-2px) scale(1.04);
+            box-shadow: 0 0 0 1px rgba(0, 0, 0, 0.6), 0 10px 34px rgba(0, 230, 118, 0.8), inset 0 1px 0 rgba(255, 255, 255, 0.55);
+        }
+        .cta-note { color: var(--text-dim); font-size: 0.9rem; margin-top: 12px; }
+
+        /* ---------- TRAILER ---------- */
+        .video-frame {
+            position: relative;
+            margin: 20px 0 10px;
+            padding: 10px;
+            border-radius: 12px;
+            background: linear-gradient(145deg, #1c2a21, #0a100c);
+            border: 1px solid var(--border-green);
+            box-shadow: 0 0 0 1px rgba(194, 143, 44, 0.35), 0 0 50px rgba(0, 230, 118, 0.22), 0 20px 60px rgba(0, 0, 0, 0.9);
+        }
+        .video-container {
+            position: relative;
+            padding-bottom: 56.25%;
+            height: 0;
+            overflow: hidden;
+            border-radius: 6px;
+            background: #000;
+        }
+        .video-container iframe {
+            position: absolute;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            border: 0;
         }
 
-        /* Footer Legale (Fondamentale per Google OAuth) */
+        /* ---------- SEZIONI ---------- */
+        section { margin-top: 70px; }
+
+        h2 {
+            font-family: var(--serif);
+            color: var(--gold-bright);
+            font-size: clamp(1.6rem, 5vw, 2.3rem);
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-align: center;
+            margin: 0 0 8px;
+            text-shadow: 0 0 20px rgba(194, 143, 44, 0.4);
+        }
+        .section-rule {
+            width: 140px; height: 2px;
+            margin: 0 auto 28px;
+            background: linear-gradient(90deg, transparent, var(--gold-accent), transparent);
+        }
+        .lead { text-align: center; max-width: 720px; margin: 0 auto 30px; font-size: 1.1rem; }
+
+        .cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+            gap: 18px;
+        }
+        .card {
+            background: var(--panel);
+            border: 1px solid rgba(0, 230, 118, 0.22);
+            border-top: 2px solid var(--neon-green);
+            border-radius: 8px;
+            padding: 22px 18px;
+            text-align: center;
+            backdrop-filter: blur(3px);
+            transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+        }
+        .card:hover {
+            transform: translateY(-6px);
+            border-color: var(--neon-green);
+            box-shadow: 0 10px 30px rgba(0, 230, 118, 0.2);
+        }
+        .card .num {
+            font-family: var(--serif);
+            font-size: 2rem;
+            color: var(--gold-accent);
+            line-height: 1;
+        }
+        .card h3 {
+            font-family: var(--serif);
+            margin: 8px 0 6px;
+            color: var(--neon-green);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-size: 1.15rem;
+        }
+        .card p { margin: 0; color: var(--text-light); font-size: 0.97rem; }
+
+        .classes .card { border-top-color: var(--gold-accent); }
+        .classes .card h3 { color: var(--gold-bright); }
+        .classes .card:hover { border-color: var(--gold-accent); box-shadow: 0 10px 30px rgba(194, 143, 44, 0.25); }
+
+        .panel {
+            background: var(--panel);
+            border: 1px solid rgba(0, 230, 118, 0.2);
+            border-left: 4px solid var(--neon-green);
+            border-radius: 8px;
+            padding: 22px 26px;
+        }
+        .panel p { margin: 0 0 12px; }
+        .panel p:last-child { margin-bottom: 0; }
+
+        .langs { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 14px; }
+        .langs span {
+            padding: 4px 14px;
+            border: 1px solid var(--gold-accent);
+            border-radius: 999px;
+            color: var(--gold-bright);
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+        }
+
+        .final-cta {
+            text-align: center;
+            padding: 50px 20px;
+            border-radius: 12px;
+            border: 1px solid rgba(194, 143, 44, 0.35);
+            background:
+                radial-gradient(ellipse at 50% 120%, rgba(0, 230, 118, 0.22), transparent 65%),
+                var(--panel);
+        }
+        .final-cta h2 { margin-bottom: 4px; }
+
+        /* ---------- FOOTER ---------- */
         footer {
-            margin-top: 60px;
-            padding-top: 20px;
-            border-top: 1px dashed var(--border-green);
+            margin-top: 70px;
+            padding-top: 24px;
+            border-top: 1px solid rgba(0, 92, 48, 0.8);
             text-align: center;
             font-size: 0.9rem;
             color: var(--text-dim);
         }
-
-        footer a {
-            color: var(--neon-green);
-            text-decoration: none;
-            margin: 0 10px;
-            transition: color 0.2s;
-        }
-
-        footer a:hover {
-            color: #ffffff;
-        }
-
+        footer a { color: var(--neon-green); text-decoration: none; margin: 0 10px; transition: color 0.2s; }
+        footer a:hover { color: #ffffff; text-decoration: underline; }
         .dev-badge {
-            margin-top: 20px;
+            margin-top: 16px;
+            font-family: var(--serif);
             font-weight: bold;
+            letter-spacing: 4px;
+            text-transform: uppercase;
             color: var(--gold-accent);
+        }
+
+        /* ---------- RIVELAZIONE ALLO SCROLL ---------- */
+        .reveal { opacity: 0; transform: translateY(26px); transition: opacity 0.8s ease, transform 0.8s ease; }
+        .reveal.in { opacity: 1; transform: none; }
+        .no-js .reveal { opacity: 1; transform: none; }
+
+        @media (max-width: 600px) {
+            header { padding-top: 60px; }
+            .btn-cta { padding: 15px 30px; font-size: 1rem; }
+            section { margin-top: 54px; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            html { scroll-behavior: auto; }
+            h1, .btn-cta::after { animation: none; }
+            .reveal { opacity: 1; transform: none; transition: none; }
+            .card { transition: none; }
         }
     </style>
 </head>
-<body>
+<body class="no-js">
+
+    <canvas id="fireflies" aria-hidden="true"></canvas>
 
     <div class="container">
-        <!-- HEADER -->
+        <!-- HERO -->
         <header>
+            <p class="kicker">PanzaLabs presents</p>
             <h1>Wildroots</h1>
             <p class="subtitle">Grove of the Last Guardian</p>
+            <div class="divider"><span></span></div>
+
+            <p class="tagline">"The forest listens... and <em>blood answers.</em>"</p>
+            <p class="tagline-sub">The Heart is fading. The forest resists. You are the Last Guardian.</p>
+
+            <div class="cta-container">
+                <a href="https://play.google.com/store/apps/details?id=com.panzadabira.wildroots" target="_blank" rel="noopener" class="btn-cta">Get it on Google Play</a>
+                <p class="cta-note">Free to play &middot; Android &middot; also on <a href="https://panzadabira.itch.io/wildroots-grove-of-the-last-guardian" target="_blank" rel="noopener" style="color: var(--neon-green);">itch.io</a></p>
+            </div>
         </header>
 
         <!-- VIDEO TRAILER -->
-        <div class="video-container">
-            <iframe src="https://www.youtube.com/embed/WDOeRLoONY4" title="Wildroots Trailer" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
-        </div>
-
-        <!-- HOOK NARRATIVO -->
-        <blockquote>
-            "The forest listens... and blood answers."<br>
-            <span style="font-size: 1rem; color: #a0a090;">The Heart is fading. The forest resists. You are the Last Guardian.</span>
-        </blockquote>
-
-        <div class="cta-container">
-            <a href="https://play.google.com/store/apps/details?id=com.panzadabira.wildroots" target="_blank" class="btn-cta">Get it on Google Play</a>
+        <div class="video-frame reveal">
+            <div class="video-container">
+                <iframe src="https://www.youtube.com/embed/WDOeRLoONY4" title="Wildroots Trailer" loading="lazy" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+            </div>
         </div>
 
         <!-- CORE GAMEPLAY -->
-        <h2>Core Gameplay</h2>
-        <p><em>Wildroots: Grove of the Last Guardian</em> is a <strong>2.5D Tower Defense game</strong> where you gather resources, build defenses, and protect the Heart of the Grove from endless waves of corrupted creatures.</p>
-        <ul>
-            <li><span><strong>Gather</strong> resources from the environment</span></li>
-            <li><span><strong>Build</strong> structures and defenses around the Heart</span></li>
-            <li><span><strong>Fight</strong> enemies in real-time combat</span></li>
-            <li><span><strong>Survive</strong> increasingly intense enemy waves</span></li>
-        </ul>
-        <p>Choose your playstyle between <strong>Warrior</strong>, <strong>Hunter</strong>, or <strong>Mage</strong>, each offering a different approach to combat and survival.</p>
+        <section class="reveal">
+            <h2>Core Gameplay</h2>
+            <div class="section-rule"></div>
+            <p class="lead"><em>Wildroots: Grove of the Last Guardian</em> is a <strong>2.5D roguelike tower defense</strong> where you gather resources, build your village and its defenses, and protect the Heart of the Grove. You are the Guardian, a Wandering Seed: every run is a new world, and the waves alternate calm, growth, assault and boss phases, until the Heart falls.</p>
+            <div class="cards">
+                <div class="card"><div class="num">I</div><h3>Gather</h3><p>Harvest resources from the living forest around you.</p></div>
+                <div class="card"><div class="num">II</div><h3>Build</h3><p>Raise structures and defenses around the Heart.</p></div>
+                <div class="card"><div class="num">III</div><h3>Fight</h3><p>Face the corrupted in real-time combat.</p></div>
+                <div class="card"><div class="num">IV</div><h3>Survive</h3><p>Endure increasingly intense enemy waves.</p></div>
+            </div>
+        </section>
 
-        <!-- MOBILE FIRST & BETA -->
-        <h2>Mobile-First Design & Beta</h2>
-        <p>This project is designed primarily with <strong>mobile devices in mind</strong>. The current Beta version is still in development, subject to changes and balancing, and serves to gather your extremely valuable feedback to shape the future of the game.</p>
-        <p><strong>Current languages:</strong> Italian, English, French, Deutsch.</p>
+        <!-- MODALITA' -->
+        <section class="reveal">
+            <h2>Ways to Play</h2>
+            <div class="section-rule"></div>
+            <p class="lead">Learn the ropes, survive for as long as you can, or take the fight to the forest together.</p>
+            <div class="cards">
+                <div class="card"><h3>The Awakening</h3><p>A guided tutorial for new Guardians.</p></div>
+                <div class="card"><h3>Ancient Forest</h3><p>Classic survival: endless cycles of phases and bosses, with no fixed end.</p></div>
+                <div class="card"><h3>Thorn Storm</h3><p>A short, high-intensity Rush mode with boosted XP.</p></div>
+                <div class="card"><h3>Co-op</h3><p>Two Guardians, one shared Heart, each with their own economy.</p></div>
+            </div>
+            <div class="panel" style="margin-top: 22px;">
+                <p><strong>Play together, or not.</strong> Invite a friend with a private room code, or team up with an <strong>AI companion</strong>, even offline. Co-op unlocks at account level 5.</p>
+            </div>
+        </section>
+
+        <!-- CLASSI -->
+        <section class="reveal classes">
+            <h2>Choose Your Path</h2>
+            <div class="section-rule"></div>
+            <p class="lead">Choose your playstyle, each offering a different approach to combat and survival, each with its own active ability.</p>
+            <div class="cards">
+                <div class="card"><h3>Warrior</h3><p>Stand at the front and hold the line.</p></div>
+                <div class="card"><h3>Hunter</h3><p>Strike from range and control the battlefield.</p></div>
+                <div class="card"><h3>Mage</h3><p>Bend the forest's power to your will.</p></div>
+                <div class="card"><h3>Necromancer</h3><p>Raise servants and let them fight for you.</p></div>
+            </div>
+        </section>
+
+        <!-- RAZZE -->
+        <section class="reveal classes">
+            <h2>Choose Your Race</h2>
+            <div class="section-rule"></div>
+            <p class="lead">Each race brings its own bonuses and an element that colors your attacks and effects.</p>
+            <div class="cards">
+                <div class="card"><h3>Humans</h3></div>
+                <div class="card"><h3>Sylvari</h3></div>
+                <div class="card"><h3>Shardlings</h3></div>
+                <div class="card"><h3>Ashborn</h3></div>
+            </div>
+        </section>
+
+        <!-- COSTRUZIONE E DIFESE -->
+        <section class="reveal">
+            <h2>Build &amp; Defend</h2>
+            <div class="section-rule"></div>
+            <p class="lead"><strong>One seed, one building.</strong> Discover ancient seeds hidden in the forest and grow them with experience to unlock new structures. Place them with a tap: they rise from the soil around the Heart.</p>
+            <div class="cards">
+                <div class="card"><h3>Defensive Briar</h3><p>A heavy strike against ground enemies.</p></div>
+                <div class="card"><h3>Thornspitter</h3><p>Long-range anti-air.</p></div>
+                <div class="card"><h3>Rotten Puffball</h3><p>A cloud of spores that wears enemies down.</p></div>
+                <div class="card"><h3>Treacherous Thorns</h3><p>A decoy trap that lures even flying enemies.</p></div>
+            </div>
+            <p class="lead" style="margin-top: 26px;">Keep the village alive too: Mines and Mushroom fields produce resources, the Doctor heals the Heart, and the Merchant trades with you. Upgrade your hero and every defense with cards.</p>
+        </section>
+
+        <!-- NEMICI -->
+        <section class="reveal">
+            <h2>The Corrupted</h2>
+            <div class="section-rule"></div>
+            <p class="lead">Roots, Beasts, Rootcasters, Winged Ones that strike from the sky, Golems, and the Giants that close each cycle as bosses. A boss phase lasts until the boss is dead.</p>
+        </section>
+
+        <!-- ESPLORAZIONE E SEGRETI -->
+        <section class="reveal">
+            <h2>Explore &amp; Discover</h2>
+            <div class="section-rule"></div>
+            <div class="panel">
+                <p>The world is generated from a seed and changes every run: ancient seeds guarded by sentinels, rare drops and temporary boosts, and a <strong>relic</strong> hidden somewhere in the forest, with no clue on the map. Use the big map to find your way and travel back to the Heart with a tap.</p>
+                <p>Keep track of everything in the <strong>Codex</strong> and the achievements, climb the leaderboards (Classic, Rush, per class, and Co-op), and take part in <strong>seasonal events</strong>. Some secrets are not on any list...</p>
+            </div>
+        </section>
+
+        <!-- IL GATTO -->
+        <section class="reveal">
+            <h2>Your Companion</h2>
+            <div class="section-rule"></div>
+            <div class="panel">
+                <p>A cat guides you through the menu and tells the story, with cosmetic skins to collect. In the field, allied helpers such as the Gatherer and the Doctor lend a hand to the Heart.</p>
+            </div>
+        </section>
+
+        <!-- FAIR PLAY -->
+        <section class="reveal">
+            <h2>Fair Play</h2>
+            <div class="section-rule"></div>
+            <div class="panel">
+                <p>Wildroots is <strong>free to play</strong> and not pay-to-win. Purchases are limited to cosmetic skins, convenience and in-game currency, with no random loot boxes. Optional rewarded videos give you extra Glabox, and ads are shown only after your consent.</p>
+            </div>
+        </section>
+
+        <!-- MOBILE FIRST & LINGUE -->
+        <section class="reveal">
+            <h2>Mobile-First Design</h2>
+            <div class="section-rule"></div>
+            <div class="panel">
+                <p>Wildroots is designed for <strong>mobile devices</strong> and is out now on Google Play. It keeps growing with updates, balancing and new content shaped by your feedback.</p>
+                <p><strong>Available in:</strong></p>
+                <div class="langs"><span>Italian</span><span>English</span><span>French</span><span>Deutsch</span><span>Spanish</span></div>
+            </div>
+        </section>
 
         <!-- ABOUT THE DEV -->
-        <h2>About the Developer</h2>
-        <p><em>Wildroots: Grove of the Last Guardian</em> is the first published project by <strong>PanzaLabs</strong>, an indie developer. The goal of this release is to learn, grow, and improve through real player feedback while building a game driven by passion, experimentation, and persistence.</p>
+        <section class="reveal">
+            <h2>About the Developer</h2>
+            <div class="section-rule"></div>
+            <div class="panel">
+                <p><em>Wildroots: Grove of the Last Guardian</em> is the first published project by <strong>PanzaLabs</strong>, an indie developer. It is built to learn, grow, and improve through real player feedback, driven by passion, experimentation, and persistence. Found a bug or have an idea? <a href="mailto:panzadabira@gmail.com" style="color: var(--neon-green);">Write to us</a>.</p>
+            </div>
+        </section>
+
+        <!-- CTA FINALE -->
+        <section class="reveal">
+            <div class="final-cta">
+                <h2>The Grove Awaits</h2>
+                <p class="lead">The Heart is fading. Will you answer?</p>
+                <a href="https://play.google.com/store/apps/details?id=com.panzadabira.wildroots" target="_blank" rel="noopener" class="btn-cta">Get it on Google Play</a>
+            </div>
+        </section>
 
         <!-- FOOTER LEGALE (IL PONTE PER GOOGLE CLOUD) -->
         <footer>
             <p>&copy; 2026 PanzaLabs. All rights reserved.</p>
             <p>
-                <!-- Privacy su GitHub Pages, Terms su Itch.io -->
-                <a href="https://wildroots-roguelike-td-506507.web.app/privacy.html" target="_blank">Privacy Policy</a> | 
+                <a href="https://wildroots-roguelike-td-506507.web.app/privacy.html" target="_blank">Privacy Policy</a> |
                 <a href="https://wildroots-roguelike-td-506507.web.app/terms.html" target="_blank">Terms of Service</a> |
                 <a href="https://panzadabira.itch.io/wildroots-grove-of-the-last-guardian" target="_blank">Press Kit (Itch.io)</a>
             </p>
             <p class="dev-badge">Forged by PanzaLabs</p>
         </footer>
     </div>
+
+    <script>
+        // Il contenuto resta visibile anche senza JavaScript (classe no-js)
+        document.body.classList.remove('no-js');
+
+        // Rivelazione delle sezioni allo scroll
+        (function () {
+            var items = document.querySelectorAll('.reveal');
+            if (!('IntersectionObserver' in window)) {
+                items.forEach(function (el) { el.classList.add('in'); });
+                return;
+            }
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); }
+                });
+            }, { threshold: 0.12 });
+            items.forEach(function (el) { io.observe(el); });
+        })();
+
+        // Lucciole: particelle verdi e dorate che salgono dal sottobosco
+        (function () {
+            var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+            var canvas = document.getElementById('fireflies');
+            if (!canvas || reduce || !canvas.getContext) return;
+            var ctx = canvas.getContext('2d');
+            var w, h, dpr, flies = [];
+
+            function resize() {
+                dpr = Math.min(window.devicePixelRatio || 1, 2);
+                w = window.innerWidth; h = window.innerHeight;
+                canvas.width = w * dpr; canvas.height = h * dpr;
+                ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+                var count = Math.round(Math.min(70, Math.max(24, w * h / 28000)));
+                flies = [];
+                for (var i = 0; i < count; i++) flies.push(make(true));
+            }
+            function make(anywhere) {
+                var gold = Math.random() < 0.3;
+                return {
+                    x: Math.random() * w,
+                    y: anywhere ? Math.random() * h : h + 10,
+                    r: 0.8 + Math.random() * 2.2,
+                    vy: 0.15 + Math.random() * 0.45,
+                    sway: Math.random() * Math.PI * 2,
+                    swaySpeed: 0.005 + Math.random() * 0.012,
+                    phase: Math.random() * Math.PI * 2,
+                    color: gold ? '240, 195, 90' : '0, 230, 118'
+                };
+            }
+            function frame() {
+                ctx.clearRect(0, 0, w, h);
+                for (var i = 0; i < flies.length; i++) {
+                    var f = flies[i];
+                    f.sway += f.swaySpeed;
+                    f.phase += 0.03;
+                    f.y -= f.vy;
+                    f.x += Math.sin(f.sway) * 0.4;
+                    if (f.y < -10) flies[i] = make(false);
+                    var a = 0.25 + 0.55 * (0.5 + 0.5 * Math.sin(f.phase));
+                    var g = ctx.createRadialGradient(f.x, f.y, 0, f.x, f.y, f.r * 6);
+                    g.addColorStop(0, 'rgba(' + f.color + ',' + a + ')');
+                    g.addColorStop(1, 'rgba(' + f.color + ',0)');
+                    ctx.fillStyle = g;
+                    ctx.beginPath();
+                    ctx.arc(f.x, f.y, f.r * 6, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+                requestAnimationFrame(frame);
+            }
+            window.addEventListener('resize', resize);
+            resize();
+            frame();
+        })();
+    </script>
 
 </body>
 </html>
